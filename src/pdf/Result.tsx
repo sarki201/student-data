@@ -45,6 +45,7 @@ interface StudentData {
 interface ResultPDFProps {
   data: {
     data: StudentData;
+    profile_picture: string;
   };
 }
 
@@ -310,7 +311,7 @@ export const ResultPDF = ({ data }: ResultPDFProps) => {
               Student First Semester Statement Of Result
             </Text>
           </View>
-          <Image style={styles.picture} src={data.data.profile_picture} />
+          <Image style={styles.picture} src={data.profile_picture} />
         </View>
         <View style={styles.details} wrap={false}>
           <View>
