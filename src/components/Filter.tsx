@@ -3,7 +3,7 @@ import Button from "./utilities/Button";
 import FormInput from "./utilities/FormInput";
 import axios, { AxiosRequestConfig } from "axios";
 import { useDispatch } from "react-redux";
-import { fetchData } from "../redux/slices/dataSlice";
+import { clearData, fetchData } from "../redux/slices/dataSlice";
 
 const Filter = () => {
   const [age, setAge] = useState<string | null>(null);
@@ -17,7 +17,7 @@ const Filter = () => {
     event.preventDefault();
 
     if (!age && !state && !level && !gender) return;
-
+    dispatch(clearData());
     const data: Partial<Record<string, string>> = {};
     if (age) data.age = age;
     if (state) data.state = state;

@@ -73,7 +73,7 @@ const TableRow: React.FC<TableRowProps> = ({ student }) => {
   }, [student.id]);
 
   return (
-    <div className="grid grid-cols-8 px-5 py-3 items-center border-solid border-t-0 border-r-0 border-l-0 border-b border-[#ECECEC]">
+    <div className="grid grid-cols-8 px-5 py-3 items-center border-solid border-t-0 border-r-0 border-l-0 border-b border-[#ECECEC] h-16">
       <p className="text-[#343434] text-sm">{student.id}</p>
       <p className="text-[#343434] text-sm">{student.surname}</p>
       <p className="text-[#343434] text-sm">{student.firstname}</p>

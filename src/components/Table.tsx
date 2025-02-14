@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { fetchData } from "../redux/slices/dataSlice";
 import TableRow from "./TableRow";
 import { AppDispatch } from "../store/store";
+import ListSkeleton from "./ListSkeleton";
 
 const Table = () => {
   const data = useSelector((state: RootState) => state.studentData.data);
@@ -43,9 +44,21 @@ const Table = () => {
           <h5 className="text-sm font-semibold">Action</h5>
         </div>
         <div className="tablecol overflow-y-scroll max-h-[500px] pr-10">
-          {data?.map((student, index) => (
-            <TableRow student={student} key={index} />
-          ))}
+          {!data ? (
+            <>
+              <ListSkeleton />
+              <ListSkeleton />
+              <ListSkeleton />
+              <ListSkeleton />
+              <ListSkeleton />
+              <ListSkeleton />
+              <ListSkeleton />
+            </>
+          ) : (
+            data.map((student, index) => (
+              <TableRow student={student} key={index} />
+            ))
+          )}
         </div>
       </div>
     </div>
