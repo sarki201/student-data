@@ -1,64 +1,60 @@
 import axios from "axios";
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const FormInput = ({
-  name,
-  setInput,
-  optionsRoute,
-}: {
+interface FormInputProps {
   name: string;
   optionsRoute: string;
-  //@ts-ignore
-  setInput: SetStateAction;
+  setInput: (value: string) => void;
+}
+
+const FormInput: React.FC<FormInputProps> = ({
+  name,
+  optionsRoute,
+  setInput,
 }) => {
-  const selectRef = useRef(null);
+  const selectRef = useRef<HTMLSelectElement | null>(null);
 
   const [options, setOptions] = useState<string[]>([]);
 
   useEffect(() => {
-    var config = {
-      method: "get",
-      maxBodyLength: Infinity,
-      url: `https://test.omniswift.com.ng/api/${optionsRoute}`,
-      headers: {
-        Accept: "application/json",
-      },
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get<{ data: Record<string, any>[] }>(
+          `https://test.omniswift.com.ng/api/${optionsRoute}`,
+        );
+
+        const data = response.data.data;
+        const smt = data.map(
+          (opt: Record<string, any>): string => opt[name] || opt["name"],
+        );
+
+        setOptions(smt);
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
     };
 
-    axios(config)
-      .then(function (response) {
-        const data = response.data.data;
-        const smt = data.map((opt: object): string => {
-          return opt[name] || opt["name"];
-        });
-        setOptions(smt);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
+    fetchOptions();
+  }, [optionsRoute, name]); // Dependencies added to useEffect
 
   return (
     <div className="relative">
       <select
         ref={selectRef}
-        name=""
-        id=""
         className="w-full border border-[#ADB7BE] border-solid rounded-sm pt-3 p-2 text-[#343434] text-sm outline-0"
         onChange={() => {
-          setInput(selectRef.current!.value);
+          if (selectRef.current) {
+            setInput(selectRef.current.value);
+          }
         }}
+        defaultValue=""
       >
-        <option value="" selected>
-          Select {name}
-        </option>
-        {options.map((option: string, inx: number) => {
-          return (
-            <option key={inx} value={option}>
-              {option}
-            </option>
-          );
-        })}
+        <option value="">Select {name}</option>
+        {options.map((option, inx) => (
+          <option key={inx} value={option}>
+            {option}
+          </option>
+        ))}
       </select>
       <p className="absolute top-[-10px] left-2 text-sm text-[#343434] bg-white px-1 capitalize">
         {name}

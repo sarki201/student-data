@@ -1,16 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { useEffect } from "react";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { fetchData } from "../redux/slices/dataSlice";
 import TableRow from "./TableRow";
+import { AppDispatch } from "../store/store";
 
 const Table = () => {
   const data = useSelector((state: RootState) => state.studentData.data);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    var config = {
+    const config: AxiosRequestConfig = {
       method: "get",
       maxBodyLength: Infinity,
       url: "https://test.omniswift.com.ng/api/viewAllData",
@@ -20,16 +21,17 @@ const Table = () => {
     };
 
     axios(config)
-      .then(function (response) {
+      .then((response) => {
         dispatch(fetchData(response.data.data.students));
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((error) => {
+        console.error("Error fetching student data:", error);
       });
-  }, []);
+  }, [dispatch]);
+
   return (
     <div className="py-11 pl-7 pr-14 bg-white mb-20 overflow-x-auto">
-      <div className="min-w-[1100px] ">
+      <div className="min-w-[1100px]">
         <div className="bg-[#f9f9fa] grid grid-cols-8 px-5 py-3.5 items-center mr-10">
           <h5 className="text-sm font-semibold">S/N</h5>
           <h5 className="text-sm font-semibold">Surname</h5>
@@ -41,10 +43,9 @@ const Table = () => {
           <h5 className="text-sm font-semibold">Action</h5>
         </div>
         <div className="tablecol overflow-y-scroll max-h-[500px] pr-10">
-          {data &&
-            data!.map((student, index) => {
-              return <TableRow student={student} key={index} />;
-            })}
+          {data?.map((student, index) => (
+            <TableRow student={student} key={index} />
+          ))}
         </div>
       </div>
     </div>
@@ -52,4 +53,3 @@ const Table = () => {
 };
 
 export default Table;
-// grid-cols-[1fr,2fr,2fr,1fr,1.5fr,1.5fr,2fr,2.5fr]

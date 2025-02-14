@@ -1,7 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+interface Student {
+  id: number;
+  surname: string;
+  firstname: string;
+  age: number;
+  gender: string;
+  level: string;
+  state: string;
+}
+
 interface DataState {
-  data: object[] | null;
+  data: Student[] | null;
 }
 
 const initialState: DataState = {
@@ -11,7 +21,7 @@ const dataSlice = createSlice({
   name: "studentData",
   initialState,
   reducers: {
-    fetchData: (state, action: PayloadAction<object[]>) => {
+    fetchData: (state, action: PayloadAction<Student[]>) => {
       state.data = action.payload;
     },
     clearData: (state) => {

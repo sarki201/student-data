@@ -1,62 +1,50 @@
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import Button from "./utilities/Button";
 import FormInput from "./utilities/FormInput";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
+import axios, { AxiosRequestConfig } from "axios";
+import { useDispatch } from "react-redux";
 import { fetchData } from "../redux/slices/dataSlice";
 
 const Filter = () => {
-  const [age, setAge] = useState(null);
-  const [state, setState] = useState(null);
-  const [level, setLevel] = useState(null);
-  const [gender, setGender] = useState(null);
+  const [age, setAge] = useState<string | null>(null);
+  const [state, setState] = useState<string | null>(null);
+  const [level, setLevel] = useState<string | null>(null);
+  const [gender, setGender] = useState<string | null>(null);
 
-  const data = useSelector((state: RootState) => state.studentData.data);
   const dispatch = useDispatch();
 
-  const handleSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     if (!age && !state && !level && !gender) return;
-    var data = {};
-    if (age) {
-      //@ts-ignore
-      data.age = age;
-    }
-    if (state) {
-      //@ts-ignore
-      data.state = state;
-    }
-    if (level) {
-      //@ts-ignore
-      data.level = level;
-    }
-    if (gender) {
-      //@ts-ignore
-      data.gender = gender;
-    }
+
+    const data: Partial<Record<string, string>> = {};
+    if (age) data.age = age;
+    if (state) data.state = state;
+    if (level) data.level = level;
+    if (gender) data.gender = gender;
 
     console.log(data);
 
-    var config = {
+    const config: AxiosRequestConfig = {
       method: "post",
       maxBodyLength: Infinity,
       url: "https://test.omniswift.com.ng/api/filterData",
       headers: {
         Accept: "application/json",
       },
-      data: data,
+      data,
     };
 
     axios(config)
-      .then(function (response) {
+      .then((response) => {
         dispatch(fetchData(response.data.data.students));
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch((error) => {
+        console.error("Error fetching filtered data:", error);
       });
   };
+
   return (
     <div className="py-11 px-7 lg:pl-7 lg:pr-14 bg-white mb-11">
       <h3 className="text-2xl text-[#616161] font-normal pb-11">
